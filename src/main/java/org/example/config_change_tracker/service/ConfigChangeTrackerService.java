@@ -21,6 +21,10 @@ import java.util.UUID;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 
+// correlation id
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class ConfigChangeTrackerService {
 
@@ -33,6 +37,9 @@ public class ConfigChangeTrackerService {
     // metrics
     private final Counter totalChangesCounter;
     private final Counter criticalChangesCounter;
+
+    // correlation id
+    private static final Logger log = LoggerFactory.getLogger(ConfigChangeTrackerService.class);
 
     public ConfigChangeTrackerService(ConfigChangeTrackerDb repository, NotificationService notificationService, MeterRegistry meterRegistry) {
         this.repository = repository;
@@ -58,6 +65,10 @@ public class ConfigChangeTrackerService {
         );
 
         repository.save(change);
+
+        log.info("Creating config change: changeType={}, actionType={}",
+                request.getChangeType(),
+                request.getActionType());
 
         totalChangesCounter.increment();
 
