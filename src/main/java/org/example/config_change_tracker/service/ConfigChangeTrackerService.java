@@ -111,7 +111,7 @@ public class ConfigChangeTrackerService {
             }
         }
         else if (request.getChangeType()==ChangeType.APPROVAL_POLICY) {
-            if( (request.getOldValue() != null) && (request.getOldValue().asText() == "MANUAL") && (request.getOldValue().asText() == "AUTO"))
+            if( (request.getOldValue() != null) && request.getOldValue().asText().equals("MANUAL") && request.getNewValue().asText().equals("AUTO"))
                 return true;
         }
         return false;
