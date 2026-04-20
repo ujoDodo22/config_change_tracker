@@ -9,11 +9,13 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -86,6 +88,23 @@ public class GlobalExceptionHandler {
                         Instant.now(),
                         500,
                         ex.getClass().getSimpleName() + ": " + ex.getMessage()
+                ));
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+
+        String message = "Invalid value for parameter '" + ex.getName() + "'";
+
+        if (ex.getRequiredType() == UUID.class) {
+            message = "Invalid UUID format for parameter '" + ex.getName() + "'";
+        }
+
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse(
+                        Instant.now(),
+                        400,
+                        message
                 ));
     }
 }
