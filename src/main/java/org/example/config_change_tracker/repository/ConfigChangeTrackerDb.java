@@ -24,11 +24,4 @@ public class ConfigChangeTrackerDb {
     public List<ConfigData> getAll() {
         return new ArrayList<>(database.values());
     }
-
-    public List<ConfigData> getByType(ChangeType type) {
-        return database.values().stream()
-                .filter(data -> data.getChangeType() == type)
-                .toList();
-    }
-
 }
