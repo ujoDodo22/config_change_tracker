@@ -17,6 +17,10 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+// metrics
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+
 @Service
 public class ConfigChangeTrackerService {
 
@@ -26,9 +30,16 @@ public class ConfigChangeTrackerService {
     private final ConfigChangeTrackerDb repository;
     private final NotificationService notificationService;
 
-    public ConfigChangeTrackerService(ConfigChangeTrackerDb repository, NotificationService notificationService) {
+    // metrics
+    private final Counter totalChangesCounter;
+    private final Counter criticalChangesCounter;
+
+    public ConfigChangeTrackerService(ConfigChangeTrackerDb repository, NotificationService notificationService, MeterRegistry meterRegistry) {
         this.repository = repository;
         this.notificationService = notificationService;
+
+        this.totalChangesCounter = meterRegistry.counter("config.changes.total");
+        this.criticalChangesCounter = meterRegistry.counter("config.changes.critical");
     }
 
     @PostMapping
@@ -48,7 +59,10 @@ public class ConfigChangeTrackerService {
 
         repository.save(change);
 
+        totalChangesCounter.increment();
+
         if (change.isCritical()) {
+            criticalChangesCounter.increment();
             notificationService.notifyCriticalChange(change);
         }
 
