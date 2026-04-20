@@ -7,7 +7,6 @@ import java.util.UUID;
 
 public class ConfigData {
     private UUID id;
-    private String accountId; // IBAN
     private ChangeType changeType;
     private ActionType actionType; //add, update, delete
     private ApprovalType approvalType;

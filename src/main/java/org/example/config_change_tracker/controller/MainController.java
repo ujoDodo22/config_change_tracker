@@ -1,19 +1,16 @@
 package org.example.config_change_tracker.controller;
 
 import jakarta.validation.Valid;
-import org.example.config_change_tracker.ConfigChangeTrackerApplication;
 import org.example.config_change_tracker.dto.ConfigChangeTrackerRequest;
 import org.example.config_change_tracker.dto.ConfigChangeTrackerResponse;
 import org.example.config_change_tracker.model.ChangeType;
 import org.example.config_change_tracker.service.ConfigChangeTrackerService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController

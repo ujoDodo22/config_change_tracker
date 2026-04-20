@@ -4,9 +4,9 @@ import java.time.Instant;
 
 public class ErrorResponse {
 
-    private Instant timestamp;
-    private int status;
-    private String error;
+    private final Instant timestamp;
+    private final int status;
+    private final String error;
 
     public ErrorResponse(Instant timestamp, int status, String error) {
         this.timestamp = timestamp;
