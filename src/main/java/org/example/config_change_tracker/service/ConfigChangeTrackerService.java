@@ -17,8 +17,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-import static java.text.Normalizer.normalize;
-
 @Service
 public class ConfigChangeTrackerService {
 
@@ -26,9 +24,11 @@ public class ConfigChangeTrackerService {
     private static final String ERROR_INVALID_PARAMETER_APPROVAL_POLICY = "for %s type of change, %s must be a string. Possible values are AUTO or MANUAL";
 
     private final ConfigChangeTrackerDb repository;
+    private final NotificationService notificationService;
 
-    public ConfigChangeTrackerService(ConfigChangeTrackerDb repository) {
+    public ConfigChangeTrackerService(ConfigChangeTrackerDb repository, NotificationService notificationService) {
         this.repository = repository;
+        this.notificationService = notificationService;
     }
 
     @PostMapping
@@ -49,7 +49,7 @@ public class ConfigChangeTrackerService {
         repository.save(change);
 
         if (change.isCritical()) {
-            // TODO send notification
+            notificationService.notifyCriticalChange(change);
         }
 
         return makeResponseFromRequest(change);
@@ -101,7 +101,6 @@ public class ConfigChangeTrackerService {
     }
 
     private boolean IsCritical(ConfigChangeTrackerRequest request) {
-        // TODO
         if(request.getChangeType()==ChangeType.CREDIT_LIMIT)
         {
             if ( (request.getNewValue() != null) && (request.getOldValue() != null) &&
